@@ -23,8 +23,11 @@ main {
   height: 100vh;
   display: block;
   margin-right: 2vw;
-  width: 30vw;
-  max-width: 30vw;
+  width: 25vw;
+}
+
+.column-big {
+  width: 50vw;
 }
 
 /* Max width */
@@ -37,10 +40,16 @@ main {
     flex-direction: column;
   }
 }
-nav {
-  width: 100%;
-  height: 5vh;
-  background-color: #cc0070;
+nav ul {
+  list-style: none;
+  font-size: 2rem;
+  padding-left: 0;
+}
+nav.social ul {
+  display: flex;
+}
+nav.social ul img {
+  filter: invert(1);
 }
 
 .bubble {
