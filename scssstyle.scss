@@ -67,8 +67,7 @@ nav {
 .bubble {
 
   padding: 0px 20px;
-  border: 2px solid $primary;
-  background-color: $primary;
+  border: 2px inset $primary;
   border-radius: 25px;
   color: $text;
   margin: 5px;

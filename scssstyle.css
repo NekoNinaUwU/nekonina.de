@@ -54,8 +54,7 @@ nav.social ul img {
 
 .bubble {
   padding: 0px 20px;
-  border: 2px solid #cc0070;
-  background-color: #cc0070;
+  border: 2px inset #cc0070;
   border-radius: 25px;
   color: #f2e5ea;
   margin: 5px;
