@@ -73,6 +73,16 @@ nav {
   margin: 5px;
   width: 100%;
 
+  a {
+    text-decoration: none;
+    color : $text;
+  }
+
+  a:visited {
+  text-decoration: none;
+  color : $text;
+}
+
   h2 {
     color: $text
   }

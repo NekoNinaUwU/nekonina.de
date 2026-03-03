@@ -59,6 +59,14 @@ nav.social ul img {
   margin: 5px;
   width: 100%;
 }
+.bubble a {
+  text-decoration: none;
+  color: #f2e5ea;
+}
+.bubble a:visited {
+  text-decoration: none;
+  color: #f2e5ea;
+}
 .bubble h2 {
   color: #f2e5ea;
 }
