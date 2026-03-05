@@ -18,64 +18,63 @@
 	<use id="Background" href="#img1" x="0" y="0"/>
 	<path id="Form 1" fill-rule="evenodd" class="s0" d="m1938 0v189h-1957v-189z"/>
 	<path id="Form 2" fill-rule="evenodd" class="s1" d="m189 0v189h-189v-189z"/>
-	<text id="33" transform="translate(23,55)">
-		<tspan x="0" y="82.2" class="t2">3</tspan><tspan  y="82.2" class="t2">3
-</tspan>
+	<text id="Line Nr" x="94.5" y="94.5" text-anchor="middle" dominant-baseline="middle">
+		<tspan class="t2">33</tspan>
 	</text>
-	<text id="Ostendorf Süd" transform="translate(206,55)">
+	<text id="Destination" transform="translate(206,55)">
 		<tspan x="0" y="82.2" class="t2">O</tspan><tspan  y="82.2" class="t2">s</tspan><tspan  y="82.2" class="t2">t</tspan><tspan  y="82.2" class="t2">e</tspan><tspan  y="82.2" class="t2">n</tspan><tspan  y="82.2" class="t2">d</tspan><tspan  y="82.2" class="t2">o</tspan><tspan  y="82.2" class="t2">r</tspan><tspan  y="82.2" class="t2">f</tspan><tspan  y="82.2" class="t2"> </tspan><tspan  y="82.2" class="t2">S</tspan><tspan  y="82.2" class="t2">ü</tspan><tspan  y="82.2" class="t2">d
 </tspan>
 	</text>
-	<text id="13:12" transform="translate(1500,38)">
+	<text id="Current Time" transform="translate(1500,38)">
 		<tspan x="0" y="111" class="t3">1</tspan><tspan  y="111" class="t3">3</tspan><tspan  y="111" class="t3">:</tspan><tspan  y="111" class="t3">1</tspan><tspan  y="111" class="t3">2</tspan><tspan  y="111" class="t3">
 </tspan>
 	</text>
 	<path id="Form 4" fill-rule="evenodd" class="s4" d="m79.5 176.01l15-0.02 1 901.25-15 0.01z"/>
-	<path id="Form 3" fill-rule="evenodd" class="s5" d="m88.5 290c-14.1 0-25.5-11.4-25.5-25.5 0-14.1 11.4-25.5 25.5-25.5 14.1 0 25.5 11.4 25.5 25.5 0 14.1-11.4 25.5-25.5 25.5z"/>
-	<path id="Form 3 copy" fill-rule="evenodd" class="s5" d="m88.5 450c-14.1 0-25.5-11.4-25.5-25.5 0-14.1 11.4-25.5 25.5-25.5 14.1 0 25.5 11.4 25.5 25.5 0 14.1-11.4 25.5-25.5 25.5z"/>
-	<path id="Form 3 copy 3" fill-rule="evenodd" class="s5" d="m87.5 639c-14.1 0-25.5-11.4-25.5-25.5 0-14.1 11.4-25.5 25.5-25.5 14.1 0 25.5 11.4 25.5 25.5 0 14.1-11.4 25.5-25.5 25.5z"/>
-	<path id="Form 3 copy 2" fill-rule="evenodd" class="s5" d="m87.5 826c-14.1 0-25.5-11.4-25.5-25.5 0-14.1 11.4-25.5 25.5-25.5 14.1 0 25.5 11.4 25.5 25.5 0 14.1-11.4 25.5-25.5 25.5z"/>
-	<path id="Form 3 copy 4" fill-rule="evenodd" class="s5" d="m87.5 1031c-14.1 0-25.5-11.4-25.5-25.5 0-14.1 11.4-25.5 25.5-25.5 14.1 0 25.5 11.4 25.5 25.5 0 14.1-11.4 25.5-25.5 25.5z"/>
+	<path id="Form 3" fill-rule="evenodd" class="s5" d="m88.5 296.375c-17.625 0-31.875-14.25-31.875-31.875 0-17.625 14.25-31.875 31.875-31.875 17.625 0 31.875 14.25 31.875 31.875 0 17.625-14.25 31.875-31.875 31.875z"/>
+	<path id="Form 3 copy" fill-rule="evenodd" class="s5" d="m88.5 475.375c-17.625 0-31.875-14.25-31.875-31.875 0-17.625 14.25-31.875 31.875-31.875 17.625 0 31.875 14.25 31.875 31.875 0 17.625-14.25 31.875-31.875 31.875z"/>
+	<path id="Form 3 copy 3" fill-rule="evenodd" class="s5" d="m87.5 654.375c-17.625 0-31.875-14.25-31.875-31.875 0-17.625 14.25-31.875 31.875-31.875 17.625 0 31.875 14.25 31.875 31.875 0 17.625-14.25 31.875-31.875 31.875z"/>
+	<path id="Form 3 copy 2" fill-rule="evenodd" class="s5" d="m87.5 833.375c-17.625 0-31.875-14.25-31.875-31.875 0-17.625 14.25-31.875 31.875-31.875 17.625 0 31.875 14.25 31.875 31.875 0 17.625-14.25 31.875-31.875 31.875z"/>
+	<path id="Form 3 copy 4" fill-rule="evenodd" class="s5" d="m87.5 1037.375c-17.625 0-31.875-14.25-31.875-31.875 0-17.625 14.25-31.875 31.875-31.875 17.625 0 31.875 14.25 31.875 31.875 0 17.625-14.25 31.875-31.875 31.875z"/>
 	<path id="Form 5" fill-rule="evenodd" class="s1" d="m39 931h1834c16.02 0 29 12.98 29 29v90c0 16.02-12.98 29-29 29h-1834c-16.02 0-29-12.98-29-29v-90c0-16.02 12.98-29 29-29z"/>
-	<path id="Form 3 copy 5" fill-rule="evenodd" class="s6" d="m87.5 1030c-14.1 0-25.5-11.4-25.5-25.5 0-14.1 11.4-25.5 25.5-25.5 14.1 0 25.5 11.4 25.5 25.5 0 14.1-11.4 25.5-25.5 25.5z"/>
+	<path id="Form 3 copy 5" fill-rule="evenodd" class="s6" d="m87.5 1036.375c-17.625 0-31.875-14.25-31.875-31.875 0-17.625 14.25-31.875 31.875-31.875 17.625 0 31.875 14.25 31.875 31.875 0 17.625-14.25 31.875-31.875 31.875z"/>
 	<path id="Form 6" fill-rule="evenodd" class="s7" d="m80.5 931h15v48.56h-15z"/>
-	<text id="Hauptbahnhof" transform="translate(180,957)">
+	<text id="Next Stop" transform="translate(180,957)">
 		<tspan x="0" y="97" class="t8">H</tspan><tspan  y="97" class="t8">a</tspan><tspan  y="97" class="t8">u</tspan><tspan  y="97" class="t8">p</tspan><tspan  y="97" class="t8">t</tspan><tspan  y="97" class="t8">b</tspan><tspan  y="97" class="t8">a</tspan><tspan  y="97" class="t8">h</tspan><tspan  y="97" class="t8">n</tspan><tspan  y="97" class="t8">h</tspan><tspan  y="97" class="t8">o</tspan><tspan  y="97" class="t8">f</tspan><tspan  y="97" class="t8">
 </tspan>
 	</text>
-	<text id="jetzt" transform="translate(1526,944)">
+	<text id="TimeUntilNextStop" transform="translate(1526,944)">
 		<tspan x="0" y="97" class="t8">j</tspan><tspan  y="97" class="t8">e</tspan><tspan  y="97" class="t8">t</tspan><tspan  y="97" class="t8">z</tspan><tspan  y="97" class="t8">t</tspan><tspan  y="97" class="t8">
 </tspan>
 	</text>
-	<text id="Marktplatz" transform="translate(181,762)">
+	<text id="Stop1" transform="translate(181,718.3)">
 		<tspan x="0" y="82.2" class="t9">M</tspan><tspan  y="82.2" class="t9">a</tspan><tspan  y="82.2" class="t9">r</tspan><tspan  y="82.2" class="t9">k</tspan><tspan  y="82.2" class="t9">t</tspan><tspan  y="82.2" class="t9">p</tspan><tspan  y="82.2" class="t9">l</tspan><tspan  y="82.2" class="t9">a</tspan><tspan  y="82.2" class="t9">t</tspan><tspan  y="82.2" class="t9">z</tspan><tspan  y="82.2" class="t9">
 </tspan>
 	</text>
-	<text id="2 min" transform="translate(1522,760)">
+	<text id="TimeUntilStop1" transform="translate(1522,718.3)">
 		<tspan x="0" y="82.2" class="t9">2</tspan><tspan  y="82.2" class="t9"> </tspan><tspan  y="82.2" class="t9">m</tspan><tspan  y="82.2" class="t9">i</tspan><tspan  y="82.2" class="t9">n
 </tspan>
 	</text>
-	<text id="6 min" transform="translate(1516,583)">
+	<text id="TimeUntilStop2" transform="translate(1516,531.3)">
 		<tspan x="0" y="82.2" class="t9">6</tspan><tspan  y="82.2" class="t9"> </tspan><tspan  y="82.2" class="t9">m</tspan><tspan  y="82.2" class="t9">i</tspan><tspan  y="82.2" class="t9">n
 </tspan>
 	</text>
-	<text id="8 min" transform="translate(1515,394)">
+	<text id="TimeUntilStop3" transform="translate(1515,342.3)">
 		<tspan x="0" y="82.2" class="t9">8</tspan><tspan  y="82.2" class="t9"> </tspan><tspan  y="82.2" class="t9">m</tspan><tspan  y="82.2" class="t9">i</tspan><tspan  y="82.2" class="t9">n
 </tspan>
 	</text>
-	<text id="11 min" transform="translate(1512,224)">
+	<text id="TimeUntilStop4" transform="translate(1512,182.3)">
 		<tspan x="0" y="82.2" class="t9">1</tspan><tspan  y="82.2" class="t9">1</tspan><tspan  y="82.2" class="t9"> </tspan><tspan  y="82.2" class="t9">m</tspan><tspan  y="82.2" class="t9">i</tspan><tspan  y="82.2" class="t9">n
 </tspan>
 	</text>
-	<text id="Rheinstraße" transform="translate(181,573)">
+	<text id="Stop2" transform="translate(181,531.3)">
 		<tspan x="0" y="82.2" class="t9">R</tspan><tspan  y="82.2" class="t9">h</tspan><tspan  y="82.2" class="t9">e</tspan><tspan  y="82.2" class="t9">i</tspan><tspan  y="82.2" class="t9">n</tspan><tspan  y="82.2" class="t9">s</tspan><tspan  y="82.2" class="t9">t</tspan><tspan  y="82.2" class="t9">r</tspan><tspan  y="82.2" class="t9">a</tspan><tspan  y="82.2" class="t9">ß</tspan><tspan  y="82.2" class="t9">e
 </tspan>
 	</text>
-	<text id="Buchenweg" transform="translate(181,385)">
+	<text id="Stop3" transform="translate(181,342.3)">
 		<tspan x="0" y="82.2" class="t9">B</tspan><tspan  y="82.2" class="t9">u</tspan><tspan  y="82.2" class="t9">c</tspan><tspan  y="82.2" class="t9">h</tspan><tspan  y="82.2" class="t9">e</tspan><tspan  y="82.2" class="t9">n</tspan><tspan  y="82.2" class="t9">w</tspan><tspan  y="82.2" class="t9">e</tspan><tspan  y="82.2" class="t9">g
 </tspan>
 	</text>
-	<text id="Ostendorf, Bhf." transform="translate(184,217)">
+	<text id="Stop4" transform="translate(184,182.3)">
 		<tspan x="0" y="82.2" class="t9">O</tspan><tspan  y="82.2" class="t9">s</tspan><tspan  y="82.2" class="t9">t</tspan><tspan  y="82.2" class="t9">e</tspan><tspan  y="82.2" class="t9">n</tspan><tspan  y="82.2" class="t9">d</tspan><tspan  y="82.2" class="t9">o</tspan><tspan  y="82.2" class="t9">r</tspan><tspan  y="82.2" class="t9">f</tspan><tspan  y="82.2" class="t9">,</tspan><tspan  y="82.2" class="t9"> </tspan><tspan  y="82.2" class="t9">B</tspan><tspan  y="82.2" class="t9">h</tspan><tspan  y="82.2" class="t9">f</tspan><tspan  y="82.2" class="t9">.</tspan><tspan  y="82.2" class="t9">
 </tspan>
 	</text>
