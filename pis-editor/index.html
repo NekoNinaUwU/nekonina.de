@@ -117,6 +117,14 @@
 	</div>
 
 	<div style="display: flex; flex-direction: column; min-width: 200px;">
+		<h2 style="font-family: Arial, Helvetica, sans-serif; margin: 0 0 5px 0; font-size: 14px;">Real-time Sync</h2>
+		<label style="display: flex; align-items: center; gap: 8px; padding: 8px; border: 1px solid #bbbbbb; border-radius: 4px; font-family: Arial, Helvetica, sans-serif; font-size: 13px;">
+			<input type="checkbox" id="Sync Real Time" onchange="onRealtimeSyncToggle();" style="width: 18px; height: 18px; cursor: pointer;" />
+			<span>Sync to real time</span>
+		</label>
+	</div>
+
+	<div style="display: flex; flex-direction: column; min-width: 200px;">
 		<h2 style="font-family: Arial, Helvetica, sans-serif; margin: 0 0 5px 0; font-size: 14px;">Line Nr Text</h2>
 		<input type="text" id="Line Nr Text" value="33" oninput="updateLineNumberText();" style="padding: 8px; font-size: 14px;" />
 	</div>
@@ -171,9 +179,69 @@
 		<input type="text" id="Time Until Stop 4 Text" value="11 min" oninput="updateTimeUntilStop4Text();" style="padding: 8px; font-size: 14px;" />
 	</div>
 
+	<div style="display: flex; flex-direction: column; min-width: 200px;">
+		<h2 style="font-family: Arial, Helvetica, sans-serif; margin: 0 0 5px 0; font-size: 14px;">Station Mode</h2>
+		<select id="Station Mode" onchange="onStationModeChange();" style="padding: 8px; font-size: 14px;">
+			<option value="manual" selected>Manual</option>
+			<option value="list">List + Arrows</option>
+			<option value="api">Journey API</option>
+		</select>
+	</div>
+
+	<div id="Journey API Controls" style="display: none; flex-direction: column; min-width: 320px; gap: 8px;">
+		<h2 style="font-family: Arial, Helvetica, sans-serif; margin: 0 0 5px 0; font-size: 14px;">Transitous MOTIS API</h2>
+		<input type="text" id="MOTIS Base URL" value="https://api.transitous.org" style="padding: 8px; font-size: 14px;" />
+		<input type="text" id="Journey ID" placeholder="Journey ID (tripId)" style="padding: 8px; font-size: 14px;" />
+		<button type="button" onclick="loadJourneyFromApi();" style="padding: 8px 12px; font-size: 14px; cursor: pointer;">Load from MOTIS</button>
+		<span id="Journey API Status" style="font-family: Arial, Helvetica, sans-serif; font-size: 13px;"></span>
+		<div style="height: 1px; background: #bbbbbb;"></div>
+		<span style="font-family: Arial, Helvetica, sans-serif; font-size: 13px;">Departure Finder</span>
+		<input type="text" id="Departure Station Query" placeholder="Station name (e.g. Berlin Hbf)" style="padding: 8px; font-size: 14px;" />
+		<input type="number" id="Departure Count" value="8" min="1" max="20" style="padding: 8px; font-size: 14px;" />
+		<button type="button" onclick="findDepartures();" style="padding: 8px 12px; font-size: 14px; cursor: pointer;">Find Departures</button>
+		<span id="Departure Finder Status" style="font-family: Arial, Helvetica, sans-serif; font-size: 13px;"></span>
+		<div id="Station Match Results" style="display: flex; flex-direction: column; gap: 6px;"></div>
+		<div id="Departure Results" style="display: flex; flex-direction: column; gap: 6px; max-height: 220px; overflow: auto;"></div>
+	</div>
+
+	<div id="Station List Controls" style="display: none; flex-direction: column; min-width: 320px; gap: 8px;">
+		<h2 style="font-family: Arial, Helvetica, sans-serif; margin: 0 0 5px 0; font-size: 14px;">Stations (one per line)</h2>
+		<div style="display: flex; gap: 10px; flex-wrap: wrap;">
+			<div style="display: flex; flex-direction: column; min-width: 260px; flex: 1; gap: 4px;">
+				<span style="font-family: Arial, Helvetica, sans-serif; font-size: 13px;">Station Names</span>
+				<textarea id="Station Names" rows="6" oninput="onStationListInput();" style="padding: 8px; font-size: 14px; resize: vertical;">Hauptbahnhof
+Marktplatz
+Rheinstraße
+Buchenweg
+Ostendorf, Bhf.</textarea>
+			</div>
+			<div style="display: flex; flex-direction: column; min-width: 180px; flex: 1; gap: 4px;">
+				<span style="font-family: Arial, Helvetica, sans-serif; font-size: 13px;">Station Times</span>
+				<textarea id="Station Times" rows="6" oninput="onStationListInput();" style="padding: 8px; font-size: 14px; resize: vertical;">jetzt
+2 min
+6 min
+8 min
+11 min</textarea>
+			</div>
+		</div>
+		<span id="Line Count Status" style="font-family: Arial, Helvetica, sans-serif; font-size: 13px;"></span>
+		<div style="display: flex; align-items: center; gap: 8px;">
+			<button type="button" id="Prev Station" onclick="stepStation(-1);" style="padding: 8px 12px; font-size: 14px; cursor: pointer;">←</button>
+			<span id="Station Position" style="font-family: Arial, Helvetica, sans-serif; font-size: 14px;">1 / 5</span>
+			<button type="button" id="Next Station" onclick="stepStation(1);" style="padding: 8px 12px; font-size: 14px; cursor: pointer;">→</button>
+		</div>
+	</div>
+
 </div>
 
 <script>
+var stationListState = {
+	mode: "manual",
+	stations: [],
+	currentIndex: 0
+};
+var realtimeClockTimer = null;
+
 function changeAccent() {
     document.getElementById("Form 2").style.fill = document.getElementById("Accent Colour").value;
     document.getElementById("Form 4").style.fill = document.getElementById("Accent Colour").value;
@@ -229,6 +297,137 @@ function updateDestinationText() {
 
 function updateCurrentTimeText() {
 	updateSvgText({ inputId: "Time Text", textId: "Current Time", className: "t3", x: 1500, y: 94.5, minFont: 80, maxFont: 150, maxWidth: 390, anchor: "start" });
+}
+
+function currentLocalTime24h() {
+	var now = new Date();
+	var hours = String(now.getHours()).padStart(2, "0");
+	var minutes = String(now.getMinutes()).padStart(2, "0");
+	return hours + ":" + minutes;
+}
+
+function syncCurrentTimeToNow() {
+	document.getElementById("Time Text").value = currentLocalTime24h();
+	updateCurrentTimeText();
+	syncStationsToRealtime();
+}
+
+function parseTimeToMinutes(timeValue) {
+	if (!timeValue) {
+		return null;
+	}
+
+	var match = String(timeValue).trim().match(/(\d{1,2}):(\d{2})/);
+	if (!match) {
+		return null;
+	}
+
+	var hours = parseInt(match[1], 10);
+	var minutes = parseInt(match[2], 10);
+	if (Number.isNaN(hours) || Number.isNaN(minutes) || hours < 0 || hours > 23 || minutes < 0 || minutes > 59) {
+		return null;
+	}
+
+	return (hours * 60) + minutes;
+}
+
+function currentMinutesOfDay() {
+	var now = new Date();
+	return (now.getHours() * 60) + now.getMinutes();
+}
+
+function referenceMinutesForTimetable() {
+	var displayTime = document.getElementById("Time Text").value;
+	var parsedDisplayTime = parseTimeToMinutes(displayTime);
+	if (parsedDisplayTime !== null) {
+		return parsedDisplayTime;
+	}
+
+	return currentMinutesOfDay();
+}
+
+function formatStationTimeForDisplay(rawTime) {
+	var targetMinutes = parseTimeToMinutes(rawTime);
+	if (targetMinutes === null) {
+		return rawTime;
+	}
+
+	var referenceMinutes = referenceMinutesForTimetable();
+	var remainingMinutes = targetMinutes - referenceMinutes;
+	if (remainingMinutes < 0) {
+		remainingMinutes += 24 * 60;
+	}
+
+	if (remainingMinutes < 1) {
+		return "jetzt";
+	}
+
+	if (remainingMinutes < 30) {
+		return "in " + remainingMinutes + " min";
+	}
+
+	return rawTime;
+}
+
+function syncStationsToRealtime() {
+	if (!document.getElementById("Sync Real Time").checked) {
+		return;
+	}
+
+	if (!stationListState.stations || stationListState.stations.length === 0) {
+		return;
+	}
+
+	var nowMinutes = currentMinutesOfDay();
+	var parsedTimes = stationListState.stations.map(function(station) {
+		return parseTimeToMinutes(station.time);
+	});
+
+	var targetIndex = -1;
+	for (var index = 0; index < parsedTimes.length; index += 1) {
+		if (parsedTimes[index] !== null && parsedTimes[index] >= nowMinutes) {
+			targetIndex = index;
+			break;
+		}
+	}
+
+	if (targetIndex === -1) {
+		for (var reverseIndex = parsedTimes.length - 1; reverseIndex >= 0; reverseIndex -= 1) {
+			if (parsedTimes[reverseIndex] !== null) {
+				targetIndex = reverseIndex;
+				break;
+			}
+		}
+	}
+
+	if (targetIndex === -1) {
+		return;
+	}
+
+	if (stationListState.currentIndex !== targetIndex) {
+		stationListState.currentIndex = targetIndex;
+	}
+
+	if (stationListState.mode === "list" || stationListState.mode === "api") {
+		applyStationListWindow();
+	}
+}
+
+function onRealtimeSyncToggle() {
+	var enabled = document.getElementById("Sync Real Time").checked;
+	var timeInput = document.getElementById("Time Text");
+
+	if (realtimeClockTimer !== null) {
+		clearInterval(realtimeClockTimer);
+		realtimeClockTimer = null;
+	}
+
+	timeInput.disabled = enabled;
+
+	if (enabled) {
+		syncCurrentTimeToNow();
+		realtimeClockTimer = setInterval(syncCurrentTimeToNow, 1000);
+	}
 }
 
 function updateNextStopText() {
@@ -291,6 +490,514 @@ function updateLineNumberText() {
 	lineNr.appendChild(tspan);
 }
 
+function splitLines(text) {
+	return text.split(/\r?\n/).map(function(line) {
+		return line.trim();
+	});
+}
+
+function countNonEmptyLines(lines) {
+	return lines.filter(function(line) {
+		return line.length > 0;
+	}).length;
+}
+
+function updateLineCountStatus(names, times) {
+	var namesCount = countNonEmptyLines(names);
+	var timesCount = countNonEmptyLines(times);
+	var status = document.getElementById("Line Count Status");
+
+	if (namesCount === timesCount) {
+		status.textContent = "Line counts match (" + namesCount + ").";
+		status.style.fontWeight = "400";
+		return;
+	}
+
+	status.textContent = "Line count mismatch: " + namesCount + " names, " + timesCount + " times.";
+	status.style.fontWeight = "700";
+}
+
+function parseStations(namesText, timesText) {
+	var names = splitLines(namesText);
+	var times = splitLines(timesText);
+	var stations = [];
+
+	for (var index = 0; index < names.length; index += 1) {
+		var name = names[index];
+		if (name.length === 0) {
+			continue;
+		}
+
+		stations.push({
+			name: name,
+			time: times[index] || ""
+		});
+	}
+
+	return stations;
+}
+
+function setJourneyApiStatus(message, bold) {
+	var status = document.getElementById("Journey API Status");
+	status.textContent = message;
+	status.style.fontWeight = bold ? "700" : "400";
+}
+
+function setDepartureFinderStatus(message, bold) {
+	var status = document.getElementById("Departure Finder Status");
+	status.textContent = message;
+	status.style.fontWeight = bold ? "700" : "400";
+}
+
+function normalizeMOTISBaseUrl() {
+	return document.getElementById("MOTIS Base URL").value.trim().replace(/\/+$/, "");
+}
+
+function clearDepartureResults() {
+	document.getElementById("Departure Results").innerHTML = "";
+}
+
+function clearStationMatchResults() {
+	document.getElementById("Station Match Results").innerHTML = "";
+}
+
+function formatIsoTime(isoValue) {
+	if (!isoValue) {
+		return "";
+	}
+
+	var date = new Date(isoValue);
+	if (Number.isNaN(date.getTime())) {
+		return String(isoValue);
+	}
+
+	var hours = String(date.getHours()).padStart(2, "0");
+	var minutes = String(date.getMinutes()).padStart(2, "0");
+	return hours + ":" + minutes;
+}
+
+function pushStop(stops, stop) {
+	if (!stop || !stop.name) {
+		return;
+	}
+
+	var last = stops.length > 0 ? stops[stops.length - 1] : null;
+	if (last && last.name === stop.name && (last.time === stop.time || !stop.time)) {
+		if (!last.time && stop.time) {
+			last.time = stop.time;
+		}
+		return;
+	}
+
+	stops.push(stop);
+}
+
+function extractPlaceStop(place, fallbackTime) {
+	if (!place || !place.name) {
+		return null;
+	}
+
+	var preferredTime = place.departure || place.arrival || place.scheduledDeparture || place.scheduledArrival || fallbackTime || "";
+	return {
+		name: String(place.name).trim(),
+		time: formatIsoTime(preferredTime)
+	};
+}
+
+function extractStationsFromJourneyPayload(payload) {
+	var stops = [];
+	var legs = payload && Array.isArray(payload.legs) ? payload.legs : [];
+
+	for (var index = 0; index < legs.length; index += 1) {
+		var leg = legs[index];
+		if (!leg) {
+			continue;
+		}
+
+		pushStop(stops, extractPlaceStop(leg.from, leg.startTime));
+
+		if (Array.isArray(leg.intermediateStops)) {
+			for (var stopIndex = 0; stopIndex < leg.intermediateStops.length; stopIndex += 1) {
+				pushStop(stops, extractPlaceStop(leg.intermediateStops[stopIndex]));
+			}
+		}
+
+		pushStop(stops, extractPlaceStop(leg.to, leg.endTime));
+	}
+
+	return stops.filter(function(stop) {
+		return stop && stop.name && stop.name.length > 0;
+	});
+}
+
+function extractJourneySummary(payload, stops) {
+	var summary = {
+		destination: "",
+		lineNumber: "",
+		routeColor: ""
+	};
+
+	if (stops.length > 0) {
+		summary.destination = stops[stops.length - 1].name;
+	}
+
+	var legs = payload && Array.isArray(payload.legs) ? payload.legs : [];
+	for (var index = 0; index < legs.length; index += 1) {
+		var leg = legs[index];
+		if (!leg) {
+			continue;
+		}
+
+		if (!summary.lineNumber) {
+			summary.lineNumber = (leg.routeShortName || leg.displayName || leg.tripShortName || "").toString().trim();
+		}
+
+		if (!summary.destination) {
+			summary.destination = (leg.headsign || (leg.to && leg.to.name) || "").toString().trim();
+		}
+
+		if (!summary.routeColor) {
+			summary.routeColor = (leg.routeColor || "").toString().trim();
+		}
+
+		if (summary.lineNumber && summary.destination && summary.routeColor) {
+			break;
+		}
+	}
+
+	return summary;
+}
+
+function normalizeHexColor(value) {
+	if (!value) {
+		return "";
+	}
+
+	var cleaned = value.toString().trim().replace(/^#/, "");
+	if (!/^[0-9a-fA-F]{6}$/.test(cleaned)) {
+		return "";
+	}
+
+	return "#" + cleaned.toLowerCase();
+}
+
+async function loadJourneyFromApi() {
+	var journeyId = document.getElementById("Journey ID").value.trim();
+	var baseUrl = normalizeMOTISBaseUrl();
+
+	if (journeyId.length === 0) {
+		setJourneyApiStatus("Please enter a Journey ID (tripId).", true);
+		return;
+	}
+
+	if (baseUrl.length === 0) {
+		setJourneyApiStatus("Please enter a MOTIS base URL.", true);
+		return;
+	}
+
+	var url = baseUrl + "/api/v5/trip?tripId=" + encodeURIComponent(journeyId) + "&withScheduledSkippedStops=true";
+	setJourneyApiStatus("Loading journey...", false);
+
+	try {
+		var response = await fetch(url);
+		if (!response.ok) {
+			setJourneyApiStatus("API request failed (" + response.status + ").", true);
+			return;
+		}
+
+		var payload = await response.json();
+		var stops = extractStationsFromJourneyPayload(payload);
+		var summary = extractJourneySummary(payload, stops);
+
+		if (stops.length === 0) {
+			setJourneyApiStatus("No stops found in API response.", true);
+			return;
+		}
+
+		document.getElementById("Station Names").value = stops.map(function(stop) { return stop.name; }).join("\n");
+		document.getElementById("Station Times").value = stops.map(function(stop) { return stop.time; }).join("\n");
+
+		if (summary.destination) {
+			document.getElementById("Destination Text").value = summary.destination;
+			updateDestinationText();
+		}
+
+		if (summary.lineNumber) {
+			document.getElementById("Line Nr Text").value = summary.lineNumber;
+			updateLineNumberText();
+		}
+
+		var normalizedRouteColor = normalizeHexColor(summary.routeColor);
+		if (normalizedRouteColor) {
+			document.getElementById("Accent Colour").value = normalizedRouteColor;
+			changeAccent();
+		}
+
+		stationListState.currentIndex = 0;
+		onStationListInput();
+		applyStationListWindow();
+		setJourneyApiStatus("Loaded " + stops.length + " stops for journey " + journeyId + ".", false);
+	} catch (error) {
+		setJourneyApiStatus("Unable to load journey (network/CORS/JSON error).", true);
+	}
+}
+
+function renderDepartureResult(stationName, stopTime) {
+	var tripId = stopTime.tripId || "";
+	if (tripId.length === 0) {
+		return null;
+	}
+
+	var departureTime = "";
+	if (stopTime.place && stopTime.place.departure) {
+		departureTime = formatIsoTime(stopTime.place.departure);
+	} else if (stopTime.place && stopTime.place.scheduledDeparture) {
+		departureTime = formatIsoTime(stopTime.place.scheduledDeparture);
+	}
+
+	var lineName = stopTime.displayName || stopTime.routeShortName || stopTime.tripShortName || "Trip";
+	var headsign = stopTime.headsign || "";
+	var button = document.createElement("button");
+	button.type = "button";
+	button.style.padding = "8px 10px";
+	button.style.fontSize = "13px";
+	button.style.cursor = "pointer";
+	button.style.textAlign = "left";
+	button.textContent = (departureTime ? departureTime + " • " : "") + lineName + (headsign ? " → " + headsign : "") + " [" + tripId + "]";
+	button.onclick = function() {
+		document.getElementById("Journey ID").value = tripId;
+		setJourneyApiStatus("Loading selected departure from " + stationName + "...", false);
+		loadJourneyFromApi();
+	};
+
+	return button;
+}
+
+async function loadDeparturesForStation(station, count, baseUrl) {
+	var stationName = station.name || station.id;
+	setDepartureFinderStatus("Loading departures for " + stationName + "...", false);
+	clearDepartureResults();
+
+	var stopTimesUrl = baseUrl + "/api/v5/stoptimes?stopId=" + encodeURIComponent(station.id) + "&n=" + count + "&arriveBy=false";
+	var stopTimesResponse = await fetch(stopTimesUrl);
+	if (!stopTimesResponse.ok) {
+		setDepartureFinderStatus("Departure lookup failed (" + stopTimesResponse.status + ").", true);
+		return;
+	}
+
+	var stopTimesPayload = await stopTimesResponse.json();
+	var stopTimes = stopTimesPayload && Array.isArray(stopTimesPayload.stopTimes) ? stopTimesPayload.stopTimes : [];
+	if (stopTimes.length === 0) {
+		setDepartureFinderStatus("No departures found.", true);
+		return;
+	}
+
+	clearDepartureResults();
+	var resultsContainer = document.getElementById("Departure Results");
+	var added = 0;
+
+	for (var index = 0; index < stopTimes.length; index += 1) {
+		var button = renderDepartureResult(stationName, stopTimes[index]);
+		if (!button) {
+			continue;
+		}
+		resultsContainer.appendChild(button);
+		added += 1;
+	}
+
+	if (added === 0) {
+		setDepartureFinderStatus("Departures found, but none had a tripId.", true);
+		return;
+	}
+
+	setDepartureFinderStatus("Found " + added + " departures for " + stationName + ". Click one to load trip.", false);
+}
+
+async function findDepartures() {
+	var query = document.getElementById("Departure Station Query").value.trim();
+	var count = Math.max(1, Math.min(20, parseInt(document.getElementById("Departure Count").value || "8", 10)));
+	var baseUrl = normalizeMOTISBaseUrl();
+
+	if (query.length === 0) {
+		setDepartureFinderStatus("Please enter a station name.", true);
+		return;
+	}
+
+	if (baseUrl.length === 0) {
+		setDepartureFinderStatus("Please enter a MOTIS base URL.", true);
+		return;
+	}
+
+	setDepartureFinderStatus("Searching station...", false);
+	clearStationMatchResults();
+	clearDepartureResults();
+
+	try {
+		var geocodeUrl = baseUrl + "/api/v1/geocode?text=" + encodeURIComponent(query) + "&type=STOP";
+		var geocodeResponse = await fetch(geocodeUrl);
+		if (!geocodeResponse.ok) {
+			setDepartureFinderStatus("Station search failed (" + geocodeResponse.status + ").", true);
+			return;
+		}
+
+		var geocodeResults = await geocodeResponse.json();
+		var stations = Array.isArray(geocodeResults) ? geocodeResults.filter(function(result) {
+			return result && result.id;
+		}).slice(0, 5) : [];
+
+		if (stations.length === 0) {
+			setDepartureFinderStatus("No station found for that name.", true);
+			return;
+		}
+
+		if (stations.length === 1) {
+			await loadDeparturesForStation(stations[0], count, baseUrl);
+			return;
+		}
+
+		var matchesContainer = document.getElementById("Station Match Results");
+		for (var matchIndex = 0; matchIndex < stations.length; matchIndex += 1) {
+			var station = stations[matchIndex];
+			var button = document.createElement("button");
+			button.type = "button";
+			button.style.padding = "8px 10px";
+			button.style.fontSize = "13px";
+			button.style.cursor = "pointer";
+			button.style.textAlign = "left";
+			button.textContent = station.name || station.id;
+			button.onclick = (function(selectedStation) {
+				return function() {
+					loadDeparturesForStation(selectedStation, count, baseUrl);
+				};
+			})(station);
+			matchesContainer.appendChild(button);
+		}
+
+		setDepartureFinderStatus("Select one of the matching stations to load departures.", false);
+	} catch (error) {
+		setDepartureFinderStatus("Unable to find departures (network/CORS/JSON error).", true);
+	}
+}
+
+function stationNameAt(offset) {
+	var index = stationListState.currentIndex + offset;
+	if (index < 0 || index >= stationListState.stations.length) {
+		return "—";
+	}
+	return stationListState.stations[index].name;
+}
+
+function stationTimeAt(offset) {
+	var index = stationListState.currentIndex + offset;
+	if (index < 0 || index >= stationListState.stations.length) {
+		return "—";
+	}
+	return stationListState.stations[index].time || "—";
+}
+
+function setInputValue(id, value) {
+	var input = document.getElementById(id);
+	input.value = value;
+}
+
+function applyStationListWindow() {
+	setInputValue("Next Stop Text", stationNameAt(0));
+	setInputValue("Time Until Next Stop Text", formatStationTimeForDisplay(stationTimeAt(0)));
+	setInputValue("Stop 1 Text", stationNameAt(1));
+	setInputValue("Stop 2 Text", stationNameAt(2));
+	setInputValue("Stop 3 Text", stationNameAt(3));
+	setInputValue("Stop 4 Text", stationNameAt(4));
+	setInputValue("Time Until Stop 1 Text", formatStationTimeForDisplay(stationTimeAt(1)));
+	setInputValue("Time Until Stop 2 Text", formatStationTimeForDisplay(stationTimeAt(2)));
+	setInputValue("Time Until Stop 3 Text", formatStationTimeForDisplay(stationTimeAt(3)));
+	setInputValue("Time Until Stop 4 Text", formatStationTimeForDisplay(stationTimeAt(4)));
+
+	updateNextStopText();
+	updateTimeUntilNextStopText();
+	updateStop1Text();
+	updateStop2Text();
+	updateStop3Text();
+	updateStop4Text();
+	updateTimeUntilStop1Text();
+	updateTimeUntilStop2Text();
+	updateTimeUntilStop3Text();
+	updateTimeUntilStop4Text();
+
+	var total = stationListState.stations.length;
+	var current = total > 0 ? stationListState.currentIndex + 1 : 0;
+	document.getElementById("Station Position").textContent = current + " / " + total;
+	document.getElementById("Prev Station").disabled = stationListState.currentIndex <= 0;
+	document.getElementById("Next Station").disabled = stationListState.currentIndex >= total - 1;
+}
+
+function onStationListInput() {
+	var namesInput = document.getElementById("Station Names");
+	var timesInput = document.getElementById("Station Times");
+	var names = splitLines(namesInput.value);
+	var times = splitLines(timesInput.value);
+
+	updateLineCountStatus(names, times);
+	stationListState.stations = parseStations(namesInput.value, timesInput.value);
+
+	if (stationListState.currentIndex > stationListState.stations.length - 1) {
+		stationListState.currentIndex = Math.max(stationListState.stations.length - 1, 0);
+	}
+
+	if (stationListState.mode === "list") {
+		applyStationListWindow();
+	}
+
+	syncStationsToRealtime();
+}
+
+function stepStation(direction) {
+	if (stationListState.mode !== "list" || stationListState.stations.length === 0) {
+		return;
+	}
+
+	var nextIndex = stationListState.currentIndex + direction;
+	nextIndex = Math.max(0, Math.min(nextIndex, stationListState.stations.length - 1));
+	if (nextIndex === stationListState.currentIndex) {
+		return;
+	}
+
+	stationListState.currentIndex = nextIndex;
+	applyStationListWindow();
+}
+
+function setStopsManualDisabled(disabled) {
+	document.getElementById("Next Stop Text").disabled = disabled;
+	document.getElementById("Stop 1 Text").disabled = disabled;
+	document.getElementById("Stop 2 Text").disabled = disabled;
+	document.getElementById("Stop 3 Text").disabled = disabled;
+	document.getElementById("Stop 4 Text").disabled = disabled;
+	document.getElementById("Time Until Stop 1 Text").disabled = disabled;
+	document.getElementById("Time Until Stop 2 Text").disabled = disabled;
+	document.getElementById("Time Until Stop 3 Text").disabled = disabled;
+	document.getElementById("Time Until Stop 4 Text").disabled = disabled;
+}
+
+function onStationModeChange() {
+	stationListState.mode = document.getElementById("Station Mode").value;
+	var listControls = document.getElementById("Station List Controls");
+	var journeyApiControls = document.getElementById("Journey API Controls");
+	var listMode = stationListState.mode === "list";
+	var apiMode = stationListState.mode === "api";
+	var nonManualMode = listMode || apiMode;
+
+	listControls.style.display = nonManualMode ? "flex" : "none";
+	journeyApiControls.style.display = apiMode ? "flex" : "none";
+	setStopsManualDisabled(nonManualMode);
+
+	document.getElementById("Station Names").readOnly = apiMode;
+	document.getElementById("Station Times").readOnly = apiMode;
+
+	if (nonManualMode) {
+		onStationListInput();
+		syncStationsToRealtime();
+	}
+}
+
 updateDestinationText();
 updateCurrentTimeText();
 updateLineNumberText();
@@ -304,6 +1011,9 @@ updateStop3Text();
 updateTimeUntilStop3Text();
 updateStop4Text();
 updateTimeUntilStop4Text();
+onStationListInput();
+onStationModeChange();
+onRealtimeSyncToggle();
 </script>
 </body>
 </html>
